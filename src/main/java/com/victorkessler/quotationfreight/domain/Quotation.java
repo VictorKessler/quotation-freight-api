@@ -1,8 +1,16 @@
 package com.victorkessler.quotationfreight.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Quotation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private Long price;
-    private Long distanceInMeters;
 
     public Long getPrice() {
         return price;
@@ -10,13 +18,5 @@ public class Quotation {
 
     public void setPrice(Long price) {
         this.price = price;
-    }
-
-    public Long getDistanceInMeters() {
-        return distanceInMeters;
-    }
-
-    public void setDistanceInMeters(Long distanceInMeters) {
-        this.distanceInMeters = distanceInMeters;
     }
 }
