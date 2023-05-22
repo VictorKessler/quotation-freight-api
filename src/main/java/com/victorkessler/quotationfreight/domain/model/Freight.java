@@ -1,4 +1,4 @@
-package com.victorkessler.quotationfreight.domain;
+package com.victorkessler.quotationfreight.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
