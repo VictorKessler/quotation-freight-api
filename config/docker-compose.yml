@@ -1,11 +1,21 @@
 version: '3.9'
 services:
-  postgres:
-    image: postgres:13.4
+  postgres-db:
+    image: postgres:14-alpine
+    hostname: postgres-db
     ports:
       - '5432:5432'
     environment:
       - POSTGRES_USER=local
       - POSTGRES_PASSWORD=local
+      - POSTGRES_DB=quotation_freight
     volumes:
       - ./scripts/postgres:/docker-entrypoint-initdb.d
+
+  liquibase:
+    image: liquibase/liquibase:latest
+    volumes:
+      - ../../src/main/resources/db/changelog:/liquibase/changelog
+    command: --driver=org.postgresql.Driver --url="jdbc:postgresql://postgres-db:5432/quotation_freight" --changeLogFile=../../src/main/resources/db/changelog/db.changelog-master.xml --username=local --password=local --logLevel=info update
+    depends_on:
+      - postgres-db
