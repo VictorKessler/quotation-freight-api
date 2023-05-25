@@ -16,27 +16,22 @@
     </changeSet>
     <changeSet id="003" author="victor.kessler">
         <insert tableName="freight_per_km">
-            <column name="id" />
             <column name="distance_in_meters" value="4700"/>
             <column name="price_per_meter" value="014"/>
         </insert>
         <insert tableName="freight_per_km">
-            <column name="id" />
             <column name="distance_in_meters" value="1209"/>
             <column name="price_per_meter" value="058"/>
         </insert>
         <insert tableName="freight_per_km">
-            <column name="id" />
             <column name="distance_in_meters" value="0985"/>
             <column name="price_per_meter" value="039"/>
         </insert>
         <insert tableName="freight_per_km">
-            <column name="id" />
             <column name="distance_in_meters" value="1623"/>
             <column name="price_per_meter" value="099"/>
         </insert>
         <insert tableName="freight_per_km">
-            <column name="id" />
             <column name="distance_in_meters" value="0639"/>
             <column name="price_per_meter" value="062"/>
         </insert>
