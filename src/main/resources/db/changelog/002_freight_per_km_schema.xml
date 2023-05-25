@@ -1,0 +1,39 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="002" author="victor.kessler">
+        <createTable tableName="freight_per_km" >
+            <column name="id" type="UUID" defaultValueComputed="${uuid_function}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="distance_in_meters" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_per_meter" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="003" author="victor.kessler">
+        <insert tableName="freight_per_km">
+            <column name="distance_in_meters" value="4700"/>
+            <column name="price_per_meter" value="014"/>
+        </insert>
+        <insert tableName="freight_per_km">
+            <column name="distance_in_meters" value="1209"/>
+            <column name="price_per_meter" value="058"/>
+        </insert>
+        <insert tableName="freight_per_km">
+            <column name="distance_in_meters" value="0985"/>
+            <column name="price_per_meter" value="039"/>
+        </insert>
+        <insert tableName="freight_per_km">
+            <column name="distance_in_meters" value="1623"/>
+            <column name="price_per_meter" value="099"/>
+        </insert>
+        <insert tableName="freight_per_km">
+            <column name="distance_in_meters" value="0639"/>
+            <column name="price_per_meter" value="062"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
