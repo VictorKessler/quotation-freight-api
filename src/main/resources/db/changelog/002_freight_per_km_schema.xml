@@ -36,4 +36,11 @@
             <column name="price_per_meter" value="062"/>
         </insert>
     </changeSet>
+    <changeSet id="004" author="victor.kessler">
+        <addColumn tableName="freight_per_km">
+            <column name="calculated_freight" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
