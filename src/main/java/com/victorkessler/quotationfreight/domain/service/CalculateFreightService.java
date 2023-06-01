@@ -1,7 +1,7 @@
 package com.victorkessler.quotationfreight.domain.service;
 
 import com.victorkessler.quotationfreight.application.repository.FreightPerKmRepository;
-import com.victorkessler.quotationfreight.application.request.NewFreight;
+import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +13,13 @@ public class CalculateFreightService {
         this.repository = repository;
     }
 
-    public FreightPerKm calculate (NewFreight newFreight) {
+    public FreightPerKm calculate (NewFreightRequest newFreight) {
         Integer distanceInMeters = newFreight.distanceInMeters();
         Integer pricePerMeters = newFreight.pricePerMeters();
 
-        Integer calculatedFreight = ((distanceInMeters * pricePerMeters)/100);
+        Integer calculatedFreight = distanceInMeters * pricePerMeters;
 
-        FreightPerKm freightPerKm = new FreightPerKm(distanceInMeters, pricePerMeters, calculatedFreight.longValue());
+        FreightPerKm freightPerKm = new FreightPerKm(distanceInMeters, pricePerMeters, calculatedFreight);
 
         return repository.save(freightPerKm);
     }
