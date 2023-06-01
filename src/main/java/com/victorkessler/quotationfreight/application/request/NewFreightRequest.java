@@ -2,7 +2,7 @@ package com.victorkessler.quotationfreight.application.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record NewFreight(
+public record NewFreightRequest(
         @JsonProperty
         Integer distanceInMeters,
         @JsonProperty

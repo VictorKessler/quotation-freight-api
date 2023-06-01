@@ -2,7 +2,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="002" author="victor.kessler">
-        <createTable tableName="freight_per_km" >
+        <createTable tableName="freight_per_km">
             <column name="id" type="UUID" defaultValueComputed="${uuid_function}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -38,9 +38,29 @@
     </changeSet>
     <changeSet id="004" author="victor.kessler">
         <addColumn tableName="freight_per_km">
-            <column name="calculated_freight" type="int">
-                <constraints nullable="false" />
-            </column>
+            <column name="calculated_freight_in_cents" type="int"/>
         </addColumn>
+    </changeSet>
+    <changeSet id="005" author="victor.kessler">
+        <update tableName="freight_per_km">
+            <column name="calculated_freight_in_cents" value="65800"/>
+            <where>distance_in_meters=4700</where>
+        </update>
+        <update tableName="freight_per_km">
+            <column name="calculated_freight_in_cents" value="70122"/>
+            <where>distance_in_meters=1209</where>
+        </update>
+        <update tableName="freight_per_km">
+            <column name="calculated_freight_in_cents" value="38415"/>
+            <where>distance_in_meters=0985</where>
+        </update>
+        <update tableName="freight_per_km">
+            <column name="calculated_freight_in_cents" value="160677"/>
+            <where>distance_in_meters=1623</where>
+        </update>
+        <update tableName="freight_per_km">
+            <column name="calculated_freight_in_cents" value="39618"/>
+            <where>distance_in_meters=0639</where>
+        </update>
     </changeSet>
 </databaseChangeLog>
