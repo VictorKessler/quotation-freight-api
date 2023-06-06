@@ -15,12 +15,10 @@ public class FreightPerKm {
     private UUID uuid;
     private Integer distanceInMeters;
     private Integer pricePerMeter;
-    private Integer calculatedFreight;
 
-    public FreightPerKm(Integer distanceInMeters, Integer pricePerMeter, Integer calculatedFreight) {
+    public FreightPerKm(Integer distanceInMeters, Integer pricePerMeter) {
         this.distanceInMeters = distanceInMeters;
         this.pricePerMeter = pricePerMeter;
-        this.calculatedFreight = calculatedFreight;
     }
 
     public UUID getUuid() {
@@ -45,13 +43,5 @@ public class FreightPerKm {
 
     public void setPricePerMeter(Integer pricePerMeter) {
         this.pricePerMeter = pricePerMeter;
-    }
-
-    public Integer getCalculatedFreight() {
-        return calculatedFreight;
-    }
-
-    public void setCalculatedFreight(Integer calculatedFreight) {
-        this.calculatedFreight = calculatedFreight;
     }
 }

@@ -15,11 +15,17 @@ public class CalculateFreightService {
 
     public FreightPerKm calculate (NewFreightRequest newFreight) {
         Integer distanceInMeters = newFreight.distanceInMeters();
-        Integer pricePerMeters = newFreight.pricePerMeters();
+        Integer pricePerMeters = 0;
 
-        Integer calculatedFreight = distanceInMeters * pricePerMeters;
+        final var freightPerKmsRanges = repository.findAll();
 
-        FreightPerKm freightPerKm = new FreightPerKm(distanceInMeters, pricePerMeters, calculatedFreight);
+        for (FreightPerKm freightPerKms : freightPerKmsRanges) {
+            if (distanceInMeters - freightPerKms.getDistanceInMeters() <= 500) {
+                pricePerMeters = distanceInMeters * freightPerKms.getPricePerMeter();
+            }
+        }
+
+        FreightPerKm freightPerKm = new FreightPerKm(distanceInMeters, pricePerMeters);
 
         return repository.save(freightPerKm);
     }
