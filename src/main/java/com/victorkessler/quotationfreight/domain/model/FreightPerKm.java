@@ -12,21 +12,24 @@ public class FreightPerKm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    private UUID id;
     private Integer distanceInMeters;
-    private Integer pricePerMeter;
+    private Integer priceInCentsPerMeter;
 
-    public FreightPerKm(Integer distanceInMeters, Integer pricePerMeter) {
+    public FreightPerKm() {
+    }
+
+    public FreightPerKm(Integer distanceInMeters, Integer priceInCentsPerMeter) {
         this.distanceInMeters = distanceInMeters;
-        this.pricePerMeter = pricePerMeter;
+        this.priceInCentsPerMeter = priceInCentsPerMeter;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Integer getDistanceInMeters() {
@@ -37,11 +40,11 @@ public class FreightPerKm {
         this.distanceInMeters = distanceInMeters;
     }
 
-    public Integer getPricePerMeter() {
-        return pricePerMeter;
+    public Integer getPriceInCentsPerMeter() {
+        return priceInCentsPerMeter;
     }
 
-    public void setPricePerMeter(Integer pricePerMeter) {
-        this.pricePerMeter = pricePerMeter;
+    public void setPriceInCentsPerMeter(Integer priceInCentsPerMeter) {
+        this.priceInCentsPerMeter = priceInCentsPerMeter;
     }
 }
