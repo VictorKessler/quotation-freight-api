@@ -11,38 +11,41 @@ import java.util.UUID;
 public class Freight {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    private UUID id;
 
-    private Double distanceInMeters;
+    private Integer distanceInMeters;
 
-    private Double princeInCents;
+    private Integer priceInCents;
 
-    public Freight(Double distanceInMeters, Double princeInCents) {
+    public Freight() {
+    }
+
+    public Freight(Integer distanceInMeters, Integer princeInCents) {
         this.distanceInMeters = distanceInMeters;
-        this.princeInCents = princeInCents;
+        this.priceInCents = princeInCents;
     }
 
     public UUID getUuid() {
-        return uuid;
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setUuid(UUID id) {
+        this.id = id;
     }
 
-    public Double getDistanceInMeters() {
+    public Integer getDistanceInMeters() {
         return distanceInMeters;
     }
 
-    public void setDistanceInMeters(Double distanceInMeters) {
+    public void setDistanceInMeters(Integer distanceInMeters) {
         this.distanceInMeters = distanceInMeters;
     }
 
-    public Double getPrinceInCents() {
-        return princeInCents;
+    public Integer getPrinceInCents() {
+        return priceInCents;
     }
 
-    public void setPrinceInCents(Double princeInCents) {
-        this.princeInCents = princeInCents;
+    public void setPrinceInCents(Integer princeInCents) {
+        this.priceInCents = princeInCents;
     }
 }
