@@ -1,4 +1,4 @@
-package com.victorkessler.quotationfreight.application;
+package com.victorkessler.quotationfreight.application.entrypoint;
 
 import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.domain.model.Freight;
@@ -16,10 +16,9 @@ public class SampleController {
     @Autowired
     private CalculateFreightService service;
 
-    @PostMapping("/newFreight")
+    @PostMapping("/new-freight")
     public ResponseEntity<Freight> newFreight(@RequestBody NewFreightRequest request) {
-        service.calculate(request);
-        return new ResponseEntity<>(HttpStatus.valueOf(202));
+        return ResponseEntity.ok(service.calculate(request));
     }
 
 }

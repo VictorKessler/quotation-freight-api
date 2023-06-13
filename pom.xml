@@ -42,6 +42,19 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>4.22.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>ifood</groupId>
+			<artifactId>delivery-platform-gis-sdk-distance</artifactId>
+			<version>0.0.31+20190826.47</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.18.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -52,5 +65,29 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>nexus-ifood</id>
+			<url>https://nexus.dc.ifood.com.br/repository/public</url>
+		</repository>
+
+		<repository>
+			<id>mvn-central</id>
+			<url>https://repo1.maven.org/maven2/</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>ifood-nexus</id>
+			<url>https://nexus.dc.ifood.com.br/repository/releases</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>ifood-nexus</id>
+			<url>https://nexus.dc.ifood.com.br/repository/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
