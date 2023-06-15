@@ -1,15 +1,16 @@
 package com.victorkessler.quotationfreight.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 @ActiveProfiles("test")
 @ContextConfiguration(classes = TestContextConfiguration.class)
@@ -24,7 +25,7 @@ public abstract class AbstractTest {
         COMPOSE_CONTAINER = new DockerComposeContainerWrapper(resourceDirectory.toFile())
                 .withLocalCompose(true)
                 .withOptions("--compatibility")
-                .withServices("postgres-db-test");
+                .withExposedService("postgres-db-test", 5432, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(5)));
 
         COMPOSE_CONTAINER.start();
         Runtime.getRuntime().addShutdownHook(new Thread(AbstractTest::stopContainer));
@@ -41,13 +42,6 @@ public abstract class AbstractTest {
 
     protected static <T> T getRequest(final String file, final Class<T> clazz) throws IOException, ClassNotFoundException {
         return new ObjectMapper().readValue(file, clazz);
-    }
-
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        final var file = getContent("data/new-freight-request.json");
-
-        System.out.printf(getRequest(file, NewFreightRequest));
-        System.out.println(NewFreightRequest.class);
     }
 
 }
