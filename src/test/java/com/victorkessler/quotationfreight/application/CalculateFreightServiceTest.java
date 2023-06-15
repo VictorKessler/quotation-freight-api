@@ -1,44 +1,90 @@
 package com.victorkessler.quotationfreight.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.victorkessler.quotationfreight.application.entrypoint.SampleController;
 import com.victorkessler.quotationfreight.application.repository.FreightRepository;
 import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.configuration.AbstractTest;
 import com.victorkessler.quotationfreight.configuration.TestContextConfiguration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
+import com.victorkessler.quotationfreight.domain.service.CalculateFreightService;
+import jakarta.annotation.PostConstruct;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.io.File;
-import java.io.IOException;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = TestContextConfiguration.class)
+@AutoConfigureMockMvc
 public class CalculateFreightServiceTest extends AbstractTest {
 
-    @Autowired
-    SampleController controller;
-    @Autowired
-    FreightRepository repository;
+    @MockBean
+    private CalculateFreightService service;
+    @MockBean
+    private FreightRepository repository;
+    @MockBean
+    private SampleController controller;
 
-    NewFreightRequest request;
+    private MockMvc mockMvc;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
-    @BeforeEach
-    void init() throws IOException, ClassNotFoundException {
-        request = getRequest("src/test/resources/data/new-freight-request.json", NewFreightRequest.class);
+    @PostConstruct
+    void setUp() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
-
 
     @Test
     @DisplayName("""
-                When a valid request of latitude and longitude comes,
-                then it should calculate the geodesic distance between the two points,
-                return the price in cents and persist in database 
+                Given a valid request of latitude and longitude,
+                then it should return 200 ok
             """)
-    void t1() {
+    public void t1() throws Exception {
+        final var request = getContent("data/new-freight-valid-request.json");
 
+        mockMvc.perform(post("/new-freight")
+                        .contentType("application/json")
+                        .content(request))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("""
+                Given an invalid request of latitude and longitude,
+                then it should return a 400 bad request
+            """)
+    public void t2() throws Exception {
+        final var request = getContent("data/new-freight-invalid-request.json");
+
+        mockMvc.perform(post("/new-freight")
+                        .contentType("application/json")
+                        .content(request))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("""
+                Given a valid request of latitude and longitude,
+                then it should be persisted in database
+            """)
+    public void t3() throws Exception {
+        final var request = getContent("data/new-freight-valid-request.json");
+
+        final var newFreightRequest = new ObjectMapper().readValue(request, NewFreightRequest.class);
+
+        final var newFreight = service.calculate(newFreightRequest);
+
+        final var freightList = repository.findAll();
+
+        freightList.forEach(freight -> Assertions.assertEquals(freight, newFreight));
     }
 
 }
