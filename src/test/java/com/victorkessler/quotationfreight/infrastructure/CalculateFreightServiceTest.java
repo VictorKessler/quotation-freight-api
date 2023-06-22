@@ -1,9 +1,9 @@
-package com.victorkessler.quotationfreight.application;
+package com.victorkessler.quotationfreight.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.victorkessler.quotationfreight.application.entrypoint.SampleController;
-import com.victorkessler.quotationfreight.application.repository.FreightRepository;
-import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
+import com.victorkessler.quotationfreight.infrastructure.sync.SampleController;
+import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
+import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.configuration.AbstractTest;
 import com.victorkessler.quotationfreight.configuration.TestContextConfiguration;
 import com.victorkessler.quotationfreight.domain.service.CalculateFreightService;

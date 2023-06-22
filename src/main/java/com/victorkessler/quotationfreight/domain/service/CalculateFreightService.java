@@ -1,9 +1,9 @@
 package com.victorkessler.quotationfreight.domain.service;
 
 import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
-import com.victorkessler.quotationfreight.application.repository.FreightPerKmRepository;
-import com.victorkessler.quotationfreight.application.repository.FreightRepository;
-import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
+import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKmRepository;
+import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
+import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.domain.model.Freight;
 import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
 import org.springframework.stereotype.Service;

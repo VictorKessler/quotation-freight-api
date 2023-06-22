@@ -1,4 +1,4 @@
-package com.victorkessler.quotationfreight.application.repository;
+package com.victorkessler.quotationfreight.infrastructure.repository;
 
 import com.victorkessler.quotationfreight.domain.model.Freight;
 import org.springframework.data.repository.CrudRepository;

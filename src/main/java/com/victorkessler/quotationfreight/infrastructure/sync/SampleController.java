@@ -1,10 +1,9 @@
-package com.victorkessler.quotationfreight.application.entrypoint;
+package com.victorkessler.quotationfreight.infrastructure.sync;
 
-import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
+import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.domain.model.Freight;
 import com.victorkessler.quotationfreight.domain.service.CalculateFreightService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
