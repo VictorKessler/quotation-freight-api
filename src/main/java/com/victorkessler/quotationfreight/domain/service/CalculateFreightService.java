@@ -1,11 +1,14 @@
 package com.victorkessler.quotationfreight.domain.service;
 
 import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
-import com.victorkessler.quotationfreight.application.repository.FreightPerKmRepository;
-import com.victorkessler.quotationfreight.application.repository.FreightRepository;
-import com.victorkessler.quotationfreight.application.request.NewFreightRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKmRepository;
+import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
+import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.domain.model.Freight;
 import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,12 +16,15 @@ public class CalculateFreightService {
     private FreightPerKmRepository freightPerKmRepository;
     private FreightRepository freightRepository;
 
-    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository) {
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate<String, String> kafkaTemplate) {
         this.freightPerKmRepository = freightPerKmRepository;
         this.freightRepository = freightRepository;
+        this.kafkaTemplate=kafkaTemplate;
     }
 
-    public Freight calculate(NewFreightRequest request) {
+    public Freight calculate(NewFreightRequest request) throws JsonProcessingException {
         final Long distanceInMeters = getGeodesicDistance(request.latitude1(), request.longitude1(), request.latitude2(), request.longitude2());
         final var freightPerKmsRanges = freightPerKmRepository.findAll();
 
@@ -27,7 +33,11 @@ public class CalculateFreightService {
                 final var priceInCents = freightPerKms.getPriceInCentsPerMeter();
                 final Freight freight = new Freight(distanceInMeters.intValue(), priceInCents);
 
-                return freightRepository.save(freight);
+                final var persistedFreight = freightRepository.save(freight);
+
+                sendMessage(persistedFreight);
+
+                return persistedFreight;
             }
         }
 
@@ -40,5 +50,9 @@ public class CalculateFreightService {
                                     double destinationLongitude) {
         var distance = GisDistanceCalculator.GEODETIC.distance(originLatitude, originLongitude, destinationLatitude, destinationLongitude) * 1000;
         return Math.round(distance);
+    }
+
+    public void sendMessage(Freight msg) throws JsonProcessingException {
+        kafkaTemplate.send("quotation-freight.calculated-freight", new ObjectMapper().writeValueAsString(msg));
     }
 }

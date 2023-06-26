@@ -1,4 +1,4 @@
-package com.victorkessler.quotationfreight.application.request;
+package com.victorkessler.quotationfreight.infrastructure.request;
 
 public record NewFreightRequest(
         Double latitude1,
