@@ -1,16 +1,14 @@
 package com.victorkessler.quotationfreight.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.util.UUID;
 
 @Entity
 public class Freight {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private Integer distanceInMeters;
@@ -47,5 +45,10 @@ public class Freight {
 
     public void setPrinceInCents(Integer princeInCents) {
         this.priceInCents = princeInCents;
+    }
+
+    @PrePersist
+    public void generateUuid(){
+        this.id = UUID.randomUUID();
     }
 }

@@ -32,8 +32,12 @@ public class CalculateFreightService {
             if (freightPerKms.getDistanceInMeters() >= distanceInMeters) {
                 final var priceInCents = freightPerKms.getPriceInCentsPerMeter();
                 final Freight freight = new Freight(distanceInMeters.intValue(), priceInCents);
-                sendMessage(freight);
-                return freightRepository.save(freight);
+
+                final var persistedFreight = freightRepository.save(freight);
+
+                sendMessage(persistedFreight);
+
+                return persistedFreight;
             }
         }
 
