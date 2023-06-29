@@ -3,11 +3,12 @@ package com.victorkessler.quotationfreight.domain.service;
 import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.victorkessler.quotationfreight.domain.model.Freight;
+import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKmRepository;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
-import com.victorkessler.quotationfreight.domain.model.Freight;
-import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -55,4 +56,5 @@ public class CalculateFreightService {
     public void sendMessage(Freight msg) throws JsonProcessingException {
         kafkaTemplate.send("quotation-freight.calculated-freight", new ObjectMapper().writeValueAsString(msg));
     }
+
 }

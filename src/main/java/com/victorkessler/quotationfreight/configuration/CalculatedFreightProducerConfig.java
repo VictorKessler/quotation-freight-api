@@ -1,5 +1,6 @@
 package com.victorkessler.quotationfreight.configuration;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ public class CalculatedFreightProducerConfig {
                 StringSerializer.class);
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
+                KafkaAvroDeserializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
