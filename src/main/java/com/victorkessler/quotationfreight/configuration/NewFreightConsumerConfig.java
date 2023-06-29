@@ -1,5 +1,6 @@
 package com.victorkessler.quotationfreight.configuration;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @EnableKafka
 @Configuration
@@ -27,7 +27,7 @@ public class NewFreightConsumerConfig {
                 StringDeserializer.class);
         props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class);
+                KafkaAvroDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
