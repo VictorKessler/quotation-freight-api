@@ -6,7 +6,6 @@ import com.victorkessler.quotationfreight.domain.service.CalculateFreightService
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

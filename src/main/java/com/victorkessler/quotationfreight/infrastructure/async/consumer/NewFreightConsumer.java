@@ -18,7 +18,6 @@ public class NewFreightConsumer {
 
     @KafkaListener(topics = "quotation-freight.new-freight", groupId = "freight-request")
     public void calculateNewFreightRequest(String msg) throws JsonProcessingException {
-
         service.calculate(new ObjectMapper().convertValue(msg, NewFreightRequest.class));
     }
 
