@@ -2,13 +2,12 @@ package com.victorkessler.quotationfreight.domain.service;
 
 import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.victorkessler.quotationfreight.domain.model.Freight;
+import com.victorkessler.quotationfreight.domain.model.FreightAvro;
 import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKmRepository;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +16,12 @@ public class CalculateFreightService {
     private FreightPerKmRepository freightPerKmRepository;
     private FreightRepository freightRepository;
 
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate kafkaTemplate;
 
-    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate<String, String> kafkaTemplate) {
+    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate kafkaTemplate) {
         this.freightPerKmRepository = freightPerKmRepository;
         this.freightRepository = freightRepository;
-        this.kafkaTemplate=kafkaTemplate;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public Freight calculate(NewFreightRequest request) throws JsonProcessingException {
@@ -54,7 +53,14 @@ public class CalculateFreightService {
     }
 
     public void sendMessage(Freight msg) throws JsonProcessingException {
-        kafkaTemplate.send("quotation-freight.calculated-freight", new ObjectMapper().writeValueAsString(msg));
+
+        final var freightAvro = FreightAvro.newBuilder()
+                .setId(msg.getUuid())
+                .setDistanceInMeters(msg.getDistanceInMeters())
+                .setPriceInCents(msg.getPrinceInCents())
+                .build();
+
+        kafkaTemplate.send("quotation-freight.calculated-freight", freightAvro);
     }
 
 }

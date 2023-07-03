@@ -1,9 +1,10 @@
 package com.victorkessler.quotationfreight.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
+import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequestAvro;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +13,9 @@ import java.util.Random;
 @Component
 public class NewFreightJob {
 
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate kafkaTemplate;
 
-    public NewFreightJob(KafkaTemplate<String, String> kafkaTemplate) {
+    public NewFreightJob(KafkaTemplate kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -40,7 +41,14 @@ public class NewFreightJob {
     }
 
     public void sendMessage(NewFreightRequest msg) throws JsonProcessingException {
-        kafkaTemplate.send("quotation-freight.new-freight", new ObjectMapper().writeValueAsString(msg));
+        final var newFreightRequestAvro = NewFreightRequestAvro.newBuilder()
+                .setLatitude1(msg.latitude1())
+                .setLongitude1(msg.longitude1())
+                .setLatitude2(msg.latitude2())
+                .setLongitude2(msg.longitude2())
+                .build();
+
+        kafkaTemplate.send("quotation-freight.new-freight", new GenericMessage<>(newFreightRequestAvro));
     }
 
     public double[] getRandomCoordinates() {

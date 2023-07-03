@@ -17,7 +17,7 @@ import java.util.Map;
 @Configuration
 public class NewFreightConsumerConfig {
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -36,10 +36,10 @@ public class NewFreightConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String>
+    public ConcurrentKafkaListenerContainerFactory<String, Object>
     kafkaListenerContainerFactory() {
 
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
