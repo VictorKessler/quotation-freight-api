@@ -3,6 +3,7 @@ package com.victorkessler.quotationfreight.infrastructure.async.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victorkessler.quotationfreight.domain.service.CalculateFreightService;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
+import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequestAvro;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
@@ -17,14 +18,15 @@ public class NewFreightConsumer {
         this.service = service;
     }
 
-    @KafkaListener(topics = "quotation-freight.new-freight", groupId = "freight-request")
-    public void calculateNewFreightRequest(Message<NewFreightRequest> msg) throws JsonProcessingException{
-
-        NewFreightRequest payload = msg.getPayload();
-        final var newFreightRequest = new NewFreightRequest(payload.latitude1(),
-                payload.longitude1(),
-                payload.latitude2(),
-                payload.longitude2());
+    @KafkaListener(topics = "quotation-freight.new-freight", groupId = "freight-request", containerFactory = "kafkaListenerContainerFactory")
+    public void calculateNewFreightRequest(Message<NewFreightRequestAvro> msg) throws JsonProcessingException{
+        NewFreightRequestAvro payload = msg.getPayload();
+        final var newFreightRequest = new NewFreightRequest(
+                payload.getLatitude1(),
+                payload.getLongitude1(),
+                payload.getLatitude2(),
+                payload.getLongitude2()
+        );
 
         service.calculate(newFreightRequest);
     }
