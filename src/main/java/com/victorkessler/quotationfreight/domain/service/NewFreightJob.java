@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequestAvro;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
+import java.util.UUID;
 
 @Component
 public class NewFreightJob {
@@ -48,7 +48,7 @@ public class NewFreightJob {
                 .setLongitude2(msg.longitude2())
                 .build();
 
-        kafkaTemplate.send("quotation-freight.new-freight", new GenericMessage<>(newFreightRequestAvro));
+        kafkaTemplate.send("quotation-freight.new-freight", UUID.randomUUID().toString(), newFreightRequestAvro);
     }
 
     public double[] getRandomCoordinates() {

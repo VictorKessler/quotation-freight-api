@@ -4,12 +4,14 @@ import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victorkessler.quotationfreight.domain.model.Freight;
 import com.victorkessler.quotationfreight.domain.model.FreightAvro;
-import com.victorkessler.quotationfreight.domain.model.FreightPerKm;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKmRepository;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CalculateFreightService {
@@ -28,20 +30,28 @@ public class CalculateFreightService {
         final Long distanceInMeters = getGeodesicDistance(request.latitude1(), request.longitude1(), request.latitude2(), request.longitude2());
         final var freightPerKmsRanges = freightPerKmRepository.findAll();
 
-        for (FreightPerKm freightPerKms : freightPerKmsRanges) {
-            if (freightPerKms.getDistanceInMeters() >= distanceInMeters) {
-                final var priceInCents = freightPerKms.getPriceInCentsPerMeter();
-                final Freight freight = new Freight(distanceInMeters.intValue(), priceInCents);
+        final var atomicFreight = new AtomicReference<Freight>();
 
-                final var persistedFreight = freightRepository.save(freight);
+        freightPerKmsRanges.stream()
+                .filter(freightPerKm -> freightPerKm.getDistanceInMeters() >= distanceInMeters)
+                .findFirst()
+                .ifPresentOrElse(freightPerKm -> {
+                    final var priceInCents = freightPerKm.getPriceInCentsPerMeter();
+                    final Freight freight = new Freight(distanceInMeters.intValue(), priceInCents);
 
-                sendMessage(persistedFreight);
+                    atomicFreight.set(freight);
+                }, () -> {
+                    atomicFreight.set(new Freight(distanceInMeters.intValue(), 0));
+                });
 
-                return persistedFreight;
-            }
+        final var persistedFreight = freightRepository.save(atomicFreight.get());
+        try {
+            sendMessage(persistedFreight);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
 
-        throw new RuntimeException();
+        return persistedFreight;
     }
 
     public Long getGeodesicDistance(double originLatitude,
@@ -60,7 +70,7 @@ public class CalculateFreightService {
                 .setPriceInCents(msg.getPrinceInCents())
                 .build();
 
-        kafkaTemplate.send("quotation-freight.calculated-freight", freightAvro);
+        kafkaTemplate.send("quotation-freight.calculated-freight", UUID.randomUUID().toString(), freightAvro);
     }
 
 }
