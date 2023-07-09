@@ -19,7 +19,7 @@ public class NewFreightJob {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 60000)
     public void newFreightCreator() throws JsonProcessingException {
         final var request = getNewFreightRequest();
 
