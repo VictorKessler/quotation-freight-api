@@ -42,10 +42,10 @@ public class NewFreightJob {
 
     public void sendMessage(NewFreightRequest msg) throws JsonProcessingException {
         final var newFreightRequestAvro = NewFreightRequestAvro.newBuilder()
-                .setLatitude1(msg.latitude1())
-                .setLongitude1(msg.longitude1())
-                .setLatitude2(msg.latitude2())
-                .setLongitude2(msg.longitude2())
+                .setLatitude1(msg.originLatitude())
+                .setLongitude1(msg.originLongitude())
+                .setLatitude2(msg.destinationLatitude())
+                .setLongitude2(msg.destinationLongitude())
                 .build();
 
         kafkaTemplate.send("quotation-freight.new-freight", UUID.randomUUID().toString(), newFreightRequestAvro);

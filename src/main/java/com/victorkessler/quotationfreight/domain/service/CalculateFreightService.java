@@ -1,12 +1,14 @@
 package com.victorkessler.quotationfreight.domain.service;
 
-import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
+//import com.deliverypf.gis.sdk.distance.GisDistanceCalculator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victorkessler.quotationfreight.domain.model.Freight;
 import com.victorkessler.quotationfreight.domain.model.FreightAvro;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKmRepository;
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
+import com.victorkessler.quotationfreight.infrastructure.response.RouteResponse;
+import com.victorkessler.quotationfreight.infrastructure.sync.OSRMFeignClient;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +19,18 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CalculateFreightService {
     private FreightPerKmRepository freightPerKmRepository;
     private FreightRepository freightRepository;
-
     private KafkaTemplate kafkaTemplate;
+    private OSRMFeignClient feignClient;
 
-    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate kafkaTemplate) {
+    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate kafkaTemplate, OSRMFeignClient feignClient) {
         this.freightPerKmRepository = freightPerKmRepository;
         this.freightRepository = freightRepository;
         this.kafkaTemplate = kafkaTemplate;
+        this.feignClient = feignClient;
     }
 
     public Freight calculate(NewFreightRequest request) throws JsonProcessingException {
-        final Long distanceInMeters = getGeodesicDistance(request.latitude1(), request.longitude1(), request.latitude2(), request.longitude2());
+        final Long distanceInMeters = getGeodesicDistance(request.originLatitude(), request.originLongitude(), request.destinationLatitude(), request.destinationLongitude());
         final var freightPerKmsRanges = freightPerKmRepository.findAll();
 
         final var atomicFreight = new AtomicReference<Freight>();
@@ -58,7 +61,8 @@ public class CalculateFreightService {
                                     double originLongitude,
                                     double destinationLatitude,
                                     double destinationLongitude) {
-        var distance = GisDistanceCalculator.GEODETIC.distance(originLatitude, originLongitude, destinationLatitude, destinationLongitude) * 1000;
+        RouteResponse response = feignClient.getRoute("driving", originLatitude, originLongitude, destinationLatitude, destinationLongitude);
+        var distance = response.getRoutes().getFirst().getDistance();
         return Math.round(distance);
     }
 
