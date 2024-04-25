@@ -8,6 +8,16 @@ public class RouteResponse {
     private String code;
     private String uuid;
 
+    public RouteResponse() {
+    }
+
+    public RouteResponse(List<Route> routes, List<Waypoint> waypoints, String code, String uuid) {
+        this.routes = routes;
+        this.waypoints = waypoints;
+        this.code = code;
+        this.uuid = uuid;
+    }
+
     public List<Route> getRoutes() {
         return routes;
     }

@@ -8,7 +8,7 @@ import com.victorkessler.quotationfreight.infrastructure.repository.FreightPerKm
 import com.victorkessler.quotationfreight.infrastructure.repository.FreightRepository;
 import com.victorkessler.quotationfreight.infrastructure.request.NewFreightRequest;
 import com.victorkessler.quotationfreight.infrastructure.response.RouteResponse;
-import com.victorkessler.quotationfreight.infrastructure.sync.OSRMFeignClient;
+import com.victorkessler.quotationfreight.infrastructure.sync.MapBoxFeignClient;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +20,9 @@ public class CalculateFreightService {
     private FreightPerKmRepository freightPerKmRepository;
     private FreightRepository freightRepository;
     private KafkaTemplate kafkaTemplate;
-    private OSRMFeignClient feignClient;
+    private MapBoxFeignClient feignClient;
 
-    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate kafkaTemplate, OSRMFeignClient feignClient) {
+    public CalculateFreightService(FreightPerKmRepository freightPerKmRepository, FreightRepository freightRepository, KafkaTemplate kafkaTemplate, MapBoxFeignClient feignClient) {
         this.freightPerKmRepository = freightPerKmRepository;
         this.freightRepository = freightRepository;
         this.kafkaTemplate = kafkaTemplate;
