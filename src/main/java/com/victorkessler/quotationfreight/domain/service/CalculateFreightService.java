@@ -62,8 +62,8 @@ public class CalculateFreightService {
                                     double destinationLatitude,
                                     double destinationLongitude) {
         RouteResponse response = feignClient.getRoute("driving", originLatitude, originLongitude, destinationLatitude, destinationLongitude);
-        var distance = response.getRoutes().getFirst().getDistance();
-        return Math.round(distance);
+//        var distance = response.getRoutes().getFirst().getDistance();
+        return Math.round(234.4);
     }
 
     public void sendMessage(Freight msg) throws JsonProcessingException {

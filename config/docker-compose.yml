@@ -19,7 +19,7 @@ services:
       - ../src/main/resources/db/changelog:/liquibase/changelog
     command:
       - --url=jdbc:postgresql://postgres-db:5432/quotation_freight
-      - --defaultSchemaName=public
+      - --defaultSchemaName=quotation_freight
       - --changeLogFile=db.changelog-master.xml
       - --username=local
       - --password=local
